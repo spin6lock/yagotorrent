@@ -27,29 +27,29 @@ func read_string(index int, buffer string) (int, string) {
 	end := index
 	len_str := buffer[start:end]
 	length, _ := strconv.Atoi(len_str)
-	return index, string(buffer[end+1:end+1+length])
+	return index + length, string(buffer[end+1:end+1+length])
 }
 
 func read_dict(index int, buffer string) (int, map[string]interface{}) {
 	//d3:cow3:moo4:spam4:eggse
 	mydict := make(map[string]interface{})
 	index = index + 1
-	start := index
 	for byte(buffer[index]) != 'e' {
 		var key interface{}
 		var value interface{}
 		var tmp_index interface{}
 		tmp_index, key = switcher(index, buffer)
 		index = tmp_index.(int)
+		fmt.Println("from read_dict", key, buffer[index:])
 		index, value = switcher(index, buffer)
 		mydict[key.(string)] = value
-		index = index + 1
+		fmt.Println("key:value", mydict)
 	}
-	fmt.Println(mydict)
 	return index, mydict
 }
 
 func read_list(index int, buffer string) (int, string) {
+	return 1, "hello"
 }
 
 func switcher(index int, input_str string) (int, interface{}) {
@@ -59,18 +59,17 @@ func switcher(index int, input_str string) (int, interface{}) {
 		index, result = read_int(index, input_str)
 		fmt.Printf("%d\n", result)
 	}	else if flag == 'd' {
-		var result, tmp_index interface{}
+		var tmp_index interface{}
 		tmp_index, result = read_dict(index, input_str)
 		index = tmp_index.(int)
-		fmt.Printf(result.(string))
 	} else if flag == 'l' {
 		//flag is list
 	} else { //flag is string
-		var result string
 		index, result = read_string(index, input_str)
 		fmt.Printf("%s\n", result)
 	}
 	index = index + 1
+	fmt.Printf("from switcher:", result)
 	return index, result
 }
 
@@ -80,6 +79,6 @@ func main(){
 	length := len(input_str)
 	index := 0
 	for index < length {
-		switcher(index, input_str)
+		index, _ = switcher(index, input_str)
 	}
 }
