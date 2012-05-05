@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"strconv"
-//	"strings"
+	"container/list"
 )
 
 func read_int(index int, buffer string) (int, int) {
@@ -48,8 +48,20 @@ func read_dict(index int, buffer string) (int, map[string]interface{}) {
 	return index, mydict
 }
 
-func read_list(index int, buffer string) (int, string) {
-	return 1, "hello"
+func read_list(index int, buffer string) (int, list.List) {
+	//l4:spam4:eggse
+	var mylist = list.New()
+	index = index + 1
+	for byte(buffer[index]) != 'e' {
+		var value interface{}
+		var tmp_index interface{}
+		tmp_index, value = switcher(index, buffer)
+		index = tmp_index.(int)
+		fmt.Println("from read_list", value)
+		mylist.PushBack(value)
+	}
+	fmt.Println("mylist: ", mylist)
+	return index, *mylist
 }
 
 func switcher(index int, input_str string) (int, interface{}) {
@@ -63,7 +75,9 @@ func switcher(index int, input_str string) (int, interface{}) {
 		tmp_index, result = read_dict(index, input_str)
 		index = tmp_index.(int)
 	} else if flag == 'l' {
-		//flag is list
+		var tmp_index interface{}
+		tmp_index, result = read_list(index, input_str)
+		index = tmp_index.(int)
 	} else { //flag is string
 		index, result = read_string(index, input_str)
 		fmt.Printf("%s\n", result)
