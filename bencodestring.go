@@ -27,6 +27,9 @@ func read_string(index int, buffer string) (int, string) {
 	end := index
 	len_str := buffer[start:end]
 	length, _ := strconv.Atoi(len_str)
+	fmt.Println("length: ", length)
+	fmt.Println("start: ", end+1)
+	fmt.Println(string(buffer[end+1:end+1+length]))
 	return index + length, string(buffer[end+1:end+1+length])
 }
 
@@ -40,10 +43,10 @@ func read_dict(index int, buffer string) (int, map[string]interface{}) {
 		var tmp_index interface{}
 		tmp_index, key = switcher(index, buffer)
 		index = tmp_index.(int)
-		fmt.Println("from read_dict", key, buffer[index:])
+		//fmt.Println("from read_dict", key, buffer[index:])
 		index, value = switcher(index, buffer)
 		mydict[key.(string)] = value
-		fmt.Println("key:value", mydict)
+		//fmt.Println("key:value", mydict)
 	}
 	return index, mydict
 }
@@ -57,10 +60,10 @@ func read_list(index int, buffer string) (int, list.List) {
 		var tmp_index interface{}
 		tmp_index, value = switcher(index, buffer)
 		index = tmp_index.(int)
-		fmt.Println("from read_list", value)
+		//fmt.Println("from read_list", value)
 		mylist.PushBack(value)
 	}
-	fmt.Println("mylist: ", mylist)
+	//fmt.Println("mylist: ", mylist)
 	return index, *mylist
 }
 
@@ -69,7 +72,7 @@ func switcher(index int, input_str string) (int, interface{}) {
 	var result interface{}
 	if flag == 'i'{
 		index, result = read_int(index, input_str)
-		fmt.Printf("%d\n", result)
+		//fmt.Printf("%d\n", result)
 	}	else if flag == 'd' {
 		var tmp_index interface{}
 		tmp_index, result = read_dict(index, input_str)
@@ -80,19 +83,34 @@ func switcher(index int, input_str string) (int, interface{}) {
 		index = tmp_index.(int)
 	} else { //flag is string
 		index, result = read_string(index, input_str)
-		fmt.Printf("%s\n", result)
+		//fmt.Printf("%s\n", result)
 	}
 	index = index + 1
-	fmt.Printf("from switcher:", result)
+	//fmt.Printf("from switcher:", result)
 	return index, result
+}
+
+func my_print(content interface{}){
+	switch t := content.(type) {
+	case string:
+		fmt.Print(content)
+	case int:
+		fmt.Print(content)
+	case map[string]interface{}:
+		for k, v := range t{
+			fmt.Println(k, " : ")
+			my_print(v)
+		}
+	case list.List:
+		fmt.Println(content)
+	}
 }
 
 func main(){
 	var input_str string
 	fmt.Scanf("%s", &input_str)
-	length := len(input_str)
+	//length := len(input_str)
 	index := 0
-	for index < length {
-		index, _ = switcher(index, input_str)
-	}
+	index, result := switcher(index, input_str)
+	my_print(result)
 }
