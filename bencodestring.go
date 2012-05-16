@@ -27,8 +27,8 @@ func read_string(index int, buffer string) (int, string) {
 	end := index
 	len_str := buffer[start:end]
 	length, _ := strconv.Atoi(len_str)
-	fmt.Println("length: ", length)
-	fmt.Println("start: ", end+1)
+	//fmt.Println("length: ", length)
+	//fmt.Println("start: ", end+1)
 	fmt.Println(string(buffer[end+1:end+1+length]))
 	return index + length, string(buffer[end+1:end+1+length])
 }
@@ -98,18 +98,27 @@ func my_print(content interface{}){
 		fmt.Print(content)
 	case map[string]interface{}:
 		for k, v := range t{
-			fmt.Println(k, " : ")
+			my_print(k)
+			fmt.Println()
 			my_print(v)
 		}
 	case list.List:
-		fmt.Println(content)
+			fmt.Println(content)
+		}
 	}
 }
 
 func main(){
+	var one_piece_str string
 	var input_str string
-	fmt.Scanf("%s", &input_str)
-	//length := len(input_str)
+	for {
+		//TODO still got some problem, the space will be truncated
+		_, e := fmt.Scanf("%s", &one_piece_str)
+		if e != nil{
+			break
+		}
+		input_str += one_piece_str
+	}
 	index := 0
 	index, result := switcher(index, input_str)
 	my_print(result)
