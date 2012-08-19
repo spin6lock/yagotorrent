@@ -113,7 +113,7 @@ func my_print(content interface{}){
 	}
 }
 
-func main(){
+func TestInputFromSTDIN(){
 	var input_str string
 	var buffer []byte = make([]byte, 4 * 1024)
 	reader := bufio.NewReader(os.Stdin)
